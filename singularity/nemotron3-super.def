@@ -1,0 +1,38 @@
+Bootstrap: docker
+From: nvcr.io/nvidia/nemo:26.02.nemotron_3_super
+
+# Prefer `singularity pull` / `apptainer pull` of the NGC image over rebuilding.
+# This definition exists for sites that must bootstrap from Docker or rebuild
+# with local overlays. Quantization requires Megatron-Bridge `super-v3`.
+
+%post
+    set -euo pipefail
+    # Container already ships Megatron-Bridge under /opt/Megatron-Bridge (or similar).
+    # Ensure super-v3 is available when the image tree is a git checkout.
+    if [ -d /opt/Megatron-Bridge/.git ]; then
+        cd /opt/Megatron-Bridge
+        git fetch origin super-v3 || true
+        git checkout super-v3 || true
+        git pull --ff-only origin super-v3 || true
+    elif [ -d /opt/megatron/.git ]; then
+        cd /opt/megatron
+        git fetch origin super-v3 || true
+        git checkout super-v3 || true
+        git pull --ff-only origin super-v3 || true
+    fi
+    echo "Nemotron 3 Super image ready. Prefer mounting a host super-v3 checkout at runtime."
+
+%environment
+    export MEGATRON_BRIDGE_ROOT=/opt/Megatron-Bridge
+    export PYTHONUNBUFFERED=1
+    # Prefer CUDA device visibility from the host scheduler
+    export NVIDIA_VISIBLE_DEVICES=${NVIDIA_VISIBLE_DEVICES:-all}
+    export NVIDIA_DRIVER_CAPABILITIES=${NVIDIA_DRIVER_CAPABILITIES:-compute,utility}
+
+%runscript
+    exec "$@"
+
+%labels
+    Author alex-ht
+    Description "Nemotron 3 Super BF16→FP8 PTQ (Megatron-Bridge Model Optimizer)"
+    NGC_IMAGE "nvcr.io/nvidia/nemo:26.02.nemotron_3_super"
