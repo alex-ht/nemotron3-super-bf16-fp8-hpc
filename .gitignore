@@ -1,0 +1,67 @@
+# Singularity / Apptainer images (large binaries)
+*.sif
+*.sqsh
+*.simg
+singularity/cache/
+singularity/.singularity/
+
+# Model weights / checkpoints
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+*.nemo
+weights/
+checkpoints/
+ckpt/
+megatron_ckpt/
+hf_export/
+models/
+
+# Hugging Face / caches
+.cache/
+hf_home/
+HF_HOME/
+huggingface/
+transformers_cache/
+*.arrow
+*.parquet
+
+# Runtime / scratch
+logs/
+scratch/
+tmp/
+.tmp/
+*.log
+*.out
+*.err
+
+# Env / secrets
+.env
+.env.local
+*.pem
+*.key
+credentials*
+
+# Python / tooling
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~
+
+# Slurm
+slurm-*.out
+slurm-*.err
